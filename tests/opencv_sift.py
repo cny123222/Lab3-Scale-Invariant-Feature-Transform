@@ -12,19 +12,13 @@ sift = cv2.SIFT_create()
 keypoints1, descriptors1 = sift.detectAndCompute(gray1, None)
 keypoints2, descriptors2 = sift.detectAndCompute(gray2, None)
 
-# bf = cv2.BFMatcher()
-# matches = bf.knnMatch(descriptors1, descriptors2, k=2)
+bf = cv2.BFMatcher()
+matches = bf.knnMatch(descriptors1, descriptors2, k=2)
 
-# good_matches = [m for m, n in matches if m.distance < 0.4 * n.distance]
+good_matches = [m for m, n in matches if m.distance < 0.4 * n.distance]
 
-# match_img = cv2.drawMatches(image1, keypoints1, image2, keypoints2, good_matches, None, flags=cv2.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
+match_img = cv2.drawMatches(image1, keypoints1, image2, keypoints2, good_matches, None, flags=cv2.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
 
-# cv2.imshow("SIFT Matches with Filtering", match_img)
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
-
-descriptors1 = descriptors1 / np.linalg.norm(descriptors1, axis=1)[:, None]
-descriptors2 = descriptors2 / np.linalg.norm(descriptors2, axis=1)[:, None]
-res = descriptors1 @ descriptors2.T
-res = res.max(axis=1)
-print(res)
+cv2.imshow("SIFT Matches with Filtering", match_img)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
