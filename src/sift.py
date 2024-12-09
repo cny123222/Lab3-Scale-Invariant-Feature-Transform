@@ -11,12 +11,12 @@ class SIFT:
 
     def detect_and_compute(
             self, 
-            img_path: str
+            img: np.ndarray
     ):
         """
         关键点提取及描述子计算
         """
-        img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         
         # 超参数计算
         sigma = (img.shape[0] + img.shape[1]) / self.alpha
