@@ -54,9 +54,9 @@ def compute_dst(img_path, a, b):
         y, x = corner.ravel()
         # print(x, y)
 
-        # condition = x == b and y == a
+        condition = x == b and y == a
         # condition = True
-        condition = False
+        # condition = False
 
         cv2.circle(image_copy, (y, x), 1, (0, 0, 255), -1)
 
@@ -157,11 +157,11 @@ def compute_dst(img_path, a, b):
             plt.grid(True)
             plt.show()
 
-        # if x == a and y == b:
+        if condition:
         # if True:
-        #     cv2.imshow('Good Features to Track Corners', image_copy)
-        #     cv2.waitKey(0)
-        #     cv2.destroyAllWindows()
+            cv2.imshow('Good Features to Track Corners', image_copy)
+            cv2.waitKey(0)
+            cv2.destroyAllWindows()
 
         # break
                 
