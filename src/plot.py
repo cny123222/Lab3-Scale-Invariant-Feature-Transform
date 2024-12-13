@@ -57,8 +57,8 @@ def find_corners(
 
 def plot_local_grad(
         img: np.ndarray,  # 彩色图片
-        coord: Tuple[int, int],
-        type: Literal['figure', 'hist'] = 'figure'
+        coord: Tuple[int, int],  # 关键点坐标
+        type: Literal['figure', 'hist'] = 'figure'  # 可视化类型
 ):
     """
     局部梯度可视化
@@ -141,9 +141,9 @@ def plot_global_grad(
 
 
 def plot_neighbour_grad(
-        img: np.ndarray,
-        coord: Tuple[int, int],
-        magnify: Optional[int] = None
+        img: np.ndarray,  # 彩色图片
+        coord: Tuple[int, int],  # 关键点坐标
+        magnify: Optional[int] = None  # 局部放大
 ):
     """
     邻域梯度可视化
@@ -164,9 +164,11 @@ def plot_neighbour_grad(
                 rect = patches.Rectangle((j, i), 1, 1, linewidth=0.05, edgecolor='black', facecolor=gray_to_rgba(img[i, j]))
                 ax.add_patch(rect)
 
+    # 绘制关键点主方向
     plot_arrow(ax, y + 0.5, x + 0.5, main_dir, 20, color=(1, 0, 0, 1), linewidth=3, head_width=0.3, head_length=0.3)
     plot_arrow(ax, y + 0.5, x + 0.5, main_dir + np.pi / 2, 20, color=(0, 0, 1, 1), linewidth=3, head_width=0.3, head_length=0.3)
 
+    # 绘制邻域梯度
     colors = generate_random_colors(16)
     cnt = 0
     for off_i in range(-2, 2):
