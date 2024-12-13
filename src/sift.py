@@ -2,6 +2,7 @@ import copy
 import cv2
 import numpy as np
 from matplotlib import pyplot as plt
+from tqdm import tqdm
 from typing import Tuple
 
 
@@ -11,15 +12,14 @@ class SIFT:
         self.alpha = alpha
         self.beta = beta
 
-    def detect_and_compute(
+    def detectAndCompute(
             self, 
-            img: np.ndarray
+            img: np.ndarray,  # 灰度图片
+            mask: None
     ):
         """
         关键点提取及描述子计算
-        """
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        
+        """       
         # 超参数计算
         sigma = (img.shape[0] + img.shape[1]) / self.alpha
         radius = int(sigma * self.beta)
@@ -28,7 +28,7 @@ class SIFT:
         n = radius
 
         # 关键点提取
-        corners = cv2.goodFeaturesToTrack(img, 100, 0.01, 10).astype(np.int32)
+        corners = cv2.goodFeaturesToTrack(img, 300, 0.01, 10).astype(np.int32)
 
         # 梯度计算
         magnitudes, angles = calc_grad(img)
@@ -37,7 +37,7 @@ class SIFT:
         dsts = []
 
         # 逐个处理关键点
-        for corner in corners:
+        for corner in tqdm(corners, desc='Processing keypoints'):
 
             y, x = corner.ravel()
 
@@ -85,8 +85,8 @@ class SIFT:
             dsts.append(dst)
 
         kps = np.array(kps)
-        dst = np.array(dsts, dtype=np.float32)
-        return kps, dst
+        dsts = np.array(dsts, dtype=np.float32)
+        return kps, dsts
 
 
 
@@ -127,7 +127,7 @@ if __name__ == '__main__':
 
     image1 = cv2.imread("target.jpg")
     kps1, dst1 = sift.detect_and_compute(image1)
-    image2 = cv2.imread("dataset/3.jpg")
+    image2 = cv2.imread("dataset/2.jpg")
     kps2, dst2 = sift.detect_and_compute(image2)
 
     similarity_matrix = np.dot(dst1, dst2.T)
@@ -135,6 +135,15 @@ if __name__ == '__main__':
     plt.imshow(similarity_matrix, cmap='inferno', interpolation='nearest', vmin=0, vmax=1)
     plt.colorbar()
     plt.show()
+
+    # similarities = similarity_matrix.flatten()
+    # plt.figure(figsize=(8, 6))
+    # plt.hist(similarities, bins=50, color='skyblue', edgecolor='black', alpha=0.7)
+    # plt.title('Distribution of Similarities')
+    # plt.xlabel('Similarity (Dot Product)')
+    # plt.ylabel('Frequency')
+    # plt.grid(True, linestyle='--', alpha=0.6)
+    # plt.show()
 
     bf = cv2.BFMatcher()
     matches = bf.knnMatch(dst1, dst2, k=2)
