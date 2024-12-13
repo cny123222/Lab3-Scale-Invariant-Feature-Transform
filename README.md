@@ -2,4 +2,4 @@
 
 ## Example
 
-![Example](results/3-mySift.png)
+![Example](results/3-mySIFT.png)
