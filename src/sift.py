@@ -5,30 +5,28 @@ from matplotlib import pyplot as plt
 from tqdm import tqdm
 from typing import Tuple
 
-
 class SIFT:
 
-    def __init__(self, alpha=700, beta=25):
-        self.alpha = alpha
-        self.beta = beta
+    def __init__(self, alpha=700, beta=15):
+        self.alpha = alpha  # 超参数alpha（见report）
+        self.beta = beta  # 超参数beta（见report）
 
     def detectAndCompute(
             self, 
             img: np.ndarray,  # 灰度图片
-            mask: None
+            mask: None = None,  # 掩码，与OpenCV SIFT接口保持一致
+            corner_num: int = 200  # 关键点数量
     ):
         """
         关键点提取及描述子计算
         """       
         # 超参数计算
         sigma = (img.shape[0] + img.shape[1]) / self.alpha
-        radius = int(sigma * self.beta)
-
         m = int(1.5 * sigma)
-        n = radius
+        n = int(sigma * self.beta)
 
         # 关键点提取
-        corners = cv2.goodFeaturesToTrack(img, 300, 0.01, 10).astype(np.int32)
+        corners = cv2.goodFeaturesToTrack(img, corner_num, 0.01, 10).astype(np.int32)
 
         # 梯度计算
         magnitudes, angles = calc_grad(img)
@@ -89,7 +87,6 @@ class SIFT:
         return kps, dsts
 
 
-
 def calc_grad(
         img: np.ndarray
 ):
@@ -126,28 +123,15 @@ if __name__ == '__main__':
     sift = SIFT()
 
     image1 = cv2.imread("target.jpg")
-    kps1, dst1 = sift.detect_and_compute(image1)
-    image2 = cv2.imread("dataset/2.jpg")
-    kps2, dst2 = sift.detect_and_compute(image2)
-
-    similarity_matrix = np.dot(dst1, dst2.T)
-    plt.figure(figsize=(10, 8))
-    plt.imshow(similarity_matrix, cmap='inferno', interpolation='nearest', vmin=0, vmax=1)
-    plt.colorbar()
-    plt.show()
-
-    # similarities = similarity_matrix.flatten()
-    # plt.figure(figsize=(8, 6))
-    # plt.hist(similarities, bins=50, color='skyblue', edgecolor='black', alpha=0.7)
-    # plt.title('Distribution of Similarities')
-    # plt.xlabel('Similarity (Dot Product)')
-    # plt.ylabel('Frequency')
-    # plt.grid(True, linestyle='--', alpha=0.6)
-    # plt.show()
+    gray1 = cv2.cvtColor(image1, cv2.COLOR_BGR2GRAY)
+    kps1, dst1 = sift.detectAndCompute(gray1)
+    image2 = cv2.imread("dataset/3.jpg")
+    gray2 = cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)
+    kps2, dst2 = sift.detectAndCompute(gray2)
 
     bf = cv2.BFMatcher()
     matches = bf.knnMatch(dst1, dst2, k=2)
-    good_matches = [m for m, n in matches if m.distance < 0.8 * n.distance]
+    good_matches = [m for m, n in matches if m.distance < 0.7 * n.distance]
     match_img = cv2.drawMatches(image1, kps1, image2, kps2, good_matches, None, flags=cv2.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
     match_img = cv2.cvtColor(match_img, cv2.COLOR_BGR2RGB)
     plt.imshow(match_img)
