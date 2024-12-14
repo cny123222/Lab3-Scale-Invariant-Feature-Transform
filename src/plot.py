@@ -140,7 +140,7 @@ def plot_global_grad(
     plt.show()
 
 
-def plot_neighbour_grad(
+def plot_neighbor_grad(
         img: np.ndarray,  # 彩色图片
         coord: Tuple[int, int],  # 关键点坐标
         magnify: Optional[int] = None  # 局部放大
@@ -217,7 +217,7 @@ if __name__ == '__main__':
     # plot_local_grad(image1, (135, 390), type='figure')
     # plot_local_grad(image1, (135, 390), type='hist')
     # plot_global_grad(image1)
-    plot_neighbour_grad(image1, (135, 390), magnify=None)
+    # plot_neighbor_grad(image1, (135, 390), magnify=None)
 
     # image1 = cv2.cvtColor(image1, cv2.COLOR_BGR2GRAY)
     # image2 = cv2.cvtColor(cv2.imread("dataset/5.jpg"), cv2.COLOR_BGR2GRAY)
