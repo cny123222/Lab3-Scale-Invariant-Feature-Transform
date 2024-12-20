@@ -6,7 +6,7 @@ import argparse
 import cv2
 import matplotlib.pyplot as plt
 from tqdm import tqdm
-from sift import SIFT
+from src.sift import SIFT
 
 
 def parse_args(args):

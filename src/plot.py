@@ -6,7 +6,7 @@ import colorsys
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from typing import Tuple, Literal, Optional
-from sift import calc_grad, calc_main_dir, SIFT
+from src.sift import calc_grad, calc_main_dir, SIFT
 
 # 设置全局字体
 plt.rcParams['font.family'] = 'serif'
